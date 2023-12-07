@@ -111,3 +111,58 @@ cmd输入`mvn -version`
 1. 定义与SQL映射文件同名的Mapper接口，并且将Mapper接口和SQL映射文件放置在同一目录下
 2. 设置SQL映射文件的namespace属性为Mapper接口全限定名
 3. 在Mapper接口中定义方法，方法名就是SQL映射文件中sql语句的id，并保持参数类型和返回 值类型一致 
+
+### 核心配置文件
+
+MyBatis 的配置文件包含了会深深影响 MyBatis 行为的设置和属性信息。 配置文档的顶层结构如下：
+
+- configuration（配置）
+  - [properties（属性）](https://mybatis.net.cn/configuration.html#properties)
+  - [settings（设置）](https://mybatis.net.cn/configuration.html#settings)
+  - [typeAliases（类型别名）](https://mybatis.net.cn/configuration.html#typeAliases)
+  - [typeHandlers（类型处理器）](https://mybatis.net.cn/configuration.html#typeHandlers)
+  - [objectFactory（对象工厂）](https://mybatis.net.cn/configuration.html#objectFactory)
+  - [plugins（插件）](https://mybatis.net.cn/configuration.html#plugins)
+  - environments（环境配置）
+    - environment（环境变量）
+      - transactionManager（事务管理器）
+      - dataSource（数据源）
+  - [databaseIdProvider（数据库厂商标识）](https://mybatis.net.cn/configuration.html#databaseIdProvider)
+  - [mappers（映射器）](https://mybatis.net.cn/configuration.html#mappers)
+
+**注意：配置文件需保证属性的先后顺序**
+
+### 查询
+
+#### 查询所有&结果映射
+
+由于数据库中字段命名和Java代码中的命名可能不一致，故可在SQL语句文件中使用resultMap
+
+即：将SQL语句的返回结果改为resultMap格式，在SQL语句上定义resultMap标签，在resultMap中写明result标签
+
+再在result标签中写明列标签和属性，如：
+
+```html
+<resultMap id="ResultMap" type="返回值对应的类">
+	<result column="数据库中字段" property="类中属性" />
+</resultMap>
+```
+
+#### 查看详情
+
+参数占位符
+
+- `#{}` ： 会将其替换为？. 为了防止SQL注入
+- `${}`  : 拼SQL。会存在SQL注入问题
+
+参数传递时使用`#{}`，表名或列名不固定的情况下使用`${}`
+
+例如
+
+```html
+<select id="selectById" resultMap="userResultMap">
+    select *
+    from tb_user where if = #{id};
+</select>
+```
+
