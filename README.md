@@ -166,3 +166,95 @@ MyBatis 的配置文件包含了会深深影响 MyBatis 行为的设置和属性
 </select>
 ```
 
+传入SQL语句时，由于SQL语句写在XML文件，所以对于 `<` 而言是有报错的
+
+所以，对于这些特殊字符的处理有以下两种方式
+
+- 转义字符：将特殊字符进行转义
+- CDATA区：输入CD自动创建CDATA区，在标签里写入特殊字符。
+
+#### 条件查询
+
+参数接收
+
+1. 散装参数：如果方法中有多个参数，需要使用@Param("SQL参数占位符名称")
+2. 对象参数：对象的属性名称要和参数占位符名称一致
+3. map集合参数
+
+##### 散装参数
+
+接口中写入函数
+
+```java
+List<brand> selectByCondition(@Param("status")int status,@Param("companyName")String compantName,@Param("brandName")String brandName)
+```
+
+返回值类型为brand，每个参数之前标注注释@Param，后面跟随标签中SQL语句占位符的名称，然后写入默认传入的参数。
+
+##### 对象参数
+
+新建对象然后给该对象指定参数，传参只需传入该对象即可。
+
+##### map集合参数
+
+作为双列集合，使用put方法指定其键值对，随后传入map对象即可。
+
+以上方法的缺陷是必须传入全部参数，缺少任意一个参数均会返回NULL。所以需要动态查询
+
+#### 动态条件查询
+
+以上方法对于查询时有缺点，解决方法为动态查询
+
+##### 多条件动态查询
+
+使用if标签和where标签，如
+
+```html
+<select id="selectByCondition" resultMap="brandResuleMap">
+    select *
+    from tb_user
+    <where>
+    	<if test="status != null">
+            status = #{status}
+        </if>
+        <if test="company_name != null and company_name != '' ">
+            company_name like #{company_name}
+        </if>
+        <if test="brandName != null and brandName != '' ">
+            brandName like #{brandName}
+        </if>
+    </where>
+</select>
+```
+
+##### 单条件查询
+
+对于xml中的标签而言，choose相当于switch，when相当于case，otherwise相当于default。
+
+使用where标签，则会自动纠错：比如在choose选择下无otherwise的情况，传入空参将报错。而使用where标签则会在此情况下将where省略。
+
+### 添加
+
+添加功能的标签为insert。如：
+
+```html
+<insert id="add">
+    insert into tb_brand (brand_name,company_name,ordered,description,status)
+    value (#{brandName},#{companyName},#{prderded},#{description},#{status});
+</insert>
+```
+
+尽管调用了SQL标签，而且在终端显示成功添加了数据，但是在数据库中并没有数据的更新，原因在于：没有开启自动提交，代表事物的提交默认为手动，所以事物会回滚，即并没有添加数据。解决办法为：
+
+- 设置自动提交事务：在获取Mapper接口的代理对象时，对SqlSession对象的getMapper方法传入参数true，即设置autocommit参数为true，以此开启自动提交
+
+- 在执行完SQL语句的方法后添加提交事务的代码：即对SqlSession对象使用提交方法，如`sqlSession.commit();`
+
+#### 返回添加数据的主键
+
+对于插入到数据库的数据，有时需要立即获取它的主键（ID），此时需要给SQL标签添加以下内容，即可给返回的对象中添加刚插入数据的主键，随后调用对象的方法获取主键即可（一般为ID）。
+
+```html
+<insert useGeneratedKeys="true" keyProperty="id">
+```
+
