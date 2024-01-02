@@ -414,3 +414,86 @@ POST请求的请求数据：
 - Content-Length：表示该响应内容的长度（字节数）；
 - Content-Encoding：表示该响应压缩算法，例如gzip；
 - Cache-Control：只是客户端应如何缓存，例如max-age=300表示可以最多缓存300秒
+
+## Tomcat
+
+Tomcat是一个轻量级的Web服务器，支持Servlet/JSP少量JavaEE规范，也称Web容器，Servlet容器
+
+### 配置
+
+Tomcat默认的输出信息以UTF-8格式为准，在Windows下会出现乱码；解决办法为：在conf目录下的logging.properties文件中将logging.ConsoleHandler.encoding的值改为GBK。
+
+对于启动时出现闪退的问题，是由于java环境没有配置。
+
+#### 修改端口号
+
+在conf/server.xml目录下将
+
+![image-20240102165118033](./assets/image-20240102165118033.png)
+
+port修改为想要的端口号即可。
+
+### Web项目结构
+
+![image-20240102170127110](./assets/image-20240102170127110.png)
+
+### 创建Maven Web项目
+
+#### 使用骨架
+
+![image-20240102170900567](./assets/image-20240102170900567.png)
+
+#### 不使用骨架
+
+![image-20240102170932789](./assets/image-20240102170932789.png)
+
+### IDEA中使用Tomcat
+
+#### 集成本地Tomcat
+
+![image-20240102171809863](./assets/image-20240102171809863.png)
+
+#### Tomcat Maven插件
+
+![image-20240102171850660](./assets/image-20240102171850660.png)
+
+## Servlet
+
+### 入门
+
+1. 创建Web项目，导入Servlet依赖坐标
+
+   ```html
+   <dependency>
+   	<grounld>javax.servlet</grounld>
+       <artifactld>javax.servlet-api</artifactld>
+       <version>3.1.0</version>
+       <scope>provided</scope>
+   </dependency>
+   ```
+
+2. 创建：定义一个类，实现servlet接口，并重写接口中所有方法，并在service方法中输入一句话
+
+   ```java
+   public class ServletDemo1 implements Servlet{
+       public void service(){}
+   }
+   ```
+
+3. 配置：在类上使用@WebServlet注解，配置该Servlet的访问路径
+
+   ```java
+   @WebServlet("/demo1")
+   public class ServletDemo1 implements Servlet{}
+   ```
+
+4.  访问：启动Tomcat，浏览器输入URL访问该Servlet
+
+   ```html
+   http://localhost/web-demo/demo1
+   ```
+
+   
+
+
+
