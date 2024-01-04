@@ -493,7 +493,72 @@ port修改为想要的端口号即可。
    http://localhost/web-demo/demo1
    ```
 
-   
+
+### 方法
+
+- 初始化方法，在Servlet被创建的时候执行一次。
+
+  ```java
+  void init(ServletConfig config)
+  ```
+
+- 提供服务方法，每次Servlet被访问，都会调用该方法
+
+  ```java
+  void service(ServletRequest req,ServletResponse res)
+  ```
+
+- 销毁方法，当Servlet被销毁时，调用该方法。在内存释放或服务器关闭时销毁Servlet
+
+  ```java
+  void destory()
+  ```
+
+- 获取ServletConfig对象
+
+  ```java
+  ServletConfig getServletConfig()
+  ```
+
+- 获取Servlet信息
+
+  ```java
+  String getServletInfo()
+  ```
+
+### UrlPattern配置
+
+#### 精确匹配
+
+- 配置路径：`@WebServlet("/user/select")`
+- 访问路径：`localhost/web-demo/user/select`
+
+#### 目录匹配
+
+- 配置路径：`@WebServlet("/user/*")`
+- 访问路径：`localhost/web-demo/user/aaa`，`localhost/web-demo/user/bbb`
+
+#### 扩展名匹配
+
+- 配置路径：`@WebServlet("/user/*.do")`
+- 访问路径：`localhost/web-demo/user/aaa.do`，`localhost/web-demo/user/bbb.do`
+
+#### 任意匹配
+
+- 配置路径：`@WebServlet("/*")`，`@WebServlet("/")`
+- 访问路径：`localhost/web-demo/aaa`，`localhost/web-demo/bbb`
+
+注意：
+
+当项目中的Servlet配置了"/"，会覆盖掉tomcat中的DefaultServlet，当其他的url-pattern都匹配不上时都会走这个Servlet
+
+当项目中配置了"/*"，意味着匹配任意访问路径
+
+#### XML配置方式编写Servlet
+
+先编写Servlet标签的全类名，再编写访问路径
+
+
 
 
 
