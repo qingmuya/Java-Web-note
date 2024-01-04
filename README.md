@@ -558,7 +558,180 @@ port修改为想要的端口号即可。
 
 先编写Servlet标签的全类名，再编写访问路径
 
+## Request和Response
 
+### Request
 
+#### 获取请求数据
 
+请求数据分为三部分：
 
+![image-20240104150347379](./assets/image-20240104150347379.png)
+
+#### 通用方式获取请求参数
+
+GET方式：
+
+```java
+String getQueryString()
+```
+
+Post方式：
+
+```java
+BufferedReader getReader()
+```
+
+获取所有参数Map集合：
+
+```java
+Map<String,String[]> getParameterMap()
+```
+
+根据名称获取参数值（数组）：
+
+```java
+String[] getParameterValues(String name)
+```
+
+根据名称获取参数值（单个值）：
+
+```java
+String getParameter(String name)
+```
+
+#### 请求参数中文乱码
+
+POST：
+
+```java
+request.setCharacterEncoding("UTF-8");	//设置字符输入流的编码 
+```
+
+通用方式：
+
+```java
+new String(username.getBytes("ISO-8859-1"),"UTF-8");	//先解码，再编码
+```
+
+URL编码实现方式
+
+编码：
+
+```java
+URLEncoder.encode(str,"utf-8");
+```
+
+解码：
+
+```java
+URLDecoder.decode(str,"ISO-8859-1");
+```
+
+#### 请求转发
+
+实现方法：
+
+```java
+req.getRequestDispatcher("资源B路径").forward(req,resp);
+```
+
+请求转发资源间共享数据：使用Request对象
+
+```java
+void setAttribute(String name,Object o)	//存储数据到request域中
+Object getAttribute(String name)	//根据key，获取值
+void remove Attribute(String name)	//根据key，删除该键值对
+```
+
+- 浏览器地址栏路径不发生变化
+- 只能转发到当前服务器的内部资源
+- 一次请求，可以再转发的资源间使用request共享数据
+
+### Response
+
+  ![image-20240104170555863](./assets/image-20240104170555863.png)   
+
+重定向：
+
+```java
+resp.setStatus(302);
+resp.setHeader("location","资源B的路径");
+```
+
+ ```java
+ resp.sendRedirect("资源B的路径")
+ ```
+
+重定向特点：
+
+- 浏览器地址栏路径发生变化
+- 可以重定向到任意位置的资源（服务器内部、外部均可）
+- 两次请求，不能再多个资源使用使用request共享数据
+
+#### 路径问题
+
+- 浏览器使用：需要加虚拟目录(项目访问路径)
+- 服务端使用：不需要加虚拟目录
+
+#### Response响应字符数据
+
+- 使用：
+
+  1. 通过Response对象获取字符输出流
+
+     ```java
+     PrintWriter writer = resp.getWriter();
+     ```
+
+  1. 写数据
+
+     ```java
+     writer.write("aaa");
+     ```
+
+- 注意：
+
+  - 该留不需要关闭，随着响应结束，response对象销毁，由服务器关闭
+
+  - 中文数据乱码：原因通过Response获取的字符输出默认编码：ISO-8859-1
+
+    ```java
+    resp.setContentType("text/html;charset=utf-8");
+    ```
+
+#### Response响应字节数据
+
+- 使用
+
+  1. 通过Response对象获取字符输出流
+
+     ```java
+     ServletOutputStream outputStream = resp.getOutputStream();
+     ```
+
+  1. 写数据
+
+     ```java
+     outputStream.write(字节数据);
+     ```
+
+- IOUtils工具类使用
+
+  1. 导入坐标
+
+     ```html
+     <dependency>
+     	<groupld>commons-io</groupld>
+         <artifactld>commons-io</artifactld>
+         <version>2.6</version>
+     </dependency>
+     ```
+
+  1. 使用
+
+     ```java
+     IOUtils.copy(输入流，输出流);
+     ```
+
+     
