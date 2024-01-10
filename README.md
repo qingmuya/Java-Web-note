@@ -750,3 +750,125 @@ MVC是一种分层开发的模式，其中：
 - 数据访问层：对数据库的CRUD基本操作
 - 业务逻辑层：对业务逻辑进行封装，组合数据访问层层中基本功能，形成复杂的业务逻辑功能
 - 表现层：接受请求，封装数据，调用业务逻辑层，响应数据
+
+## 会话跟踪
+
+- 会话：用户打开浏览器，访问web服务器的资源，会话建立，直到有一方断开连接，会话结束，在一次会话中可以包含多次请求和响应。
+- 会话跟踪：一种维护浏览器状态的方法，服务器需要识别多次请求是否来自于统一浏览器，以便在同一次会话的多次请求间共享数据。
+- HTTP协议是无状态的，每次浏览器向服务器请求时，服务器都会将该请求视为新的请求，因此我们需要会话跟踪技术来实现会话内数据共享。
+- 实现方式：
+  1. 客服端会话跟踪技术：Cookie
+  2. 服务端会话跟踪技术：Session
+
+### Cookie
+
+客户端会话技术，将数据保存到客户端，以后每次请求都携带Cookie数据进行访问
+
+#### 基本使用
+
+##### 发送Cookie
+
+1. 创建Cookie对象，设置数据
+
+   ```java
+   Cookie cookie = new Cookie("key","value");
+   ```
+
+2. 发送Cookie到客户端：使用response对象
+
+   ```java
+   response.addCookie(cookie);
+   ```
+
+##### 获取Cookie
+
+1. 获取客户端携带的所有Cookie，使用request对象
+
+   ```java
+   Cookie[] cookies = request.getCookie();
+   ```
+
+2. 遍历数组，获取每一个Cookie对象：for
+
+3. 使用Cookie对象方法获取数据
+
+    ```java
+    cookie.getName();
+    ```
+
+   ```java
+   cookie.getValue();
+   ```
+
+#### 原理
+
+#### 使用细节
+
+##### Cookie存活时间
+
+- 默认情况下，Cookie存储在浏览器内存中，当浏览器关闭，内存释放则Cookie被销毁
+- setMaxAge(int second)：设置Cookie存活时间
+  1. 正数：将Cookie写入浏览器所在电脑的硬盘，持久化存储。到时间自动删除
+  2. 负数：默认值，Cookie在当前浏览器内存中，当浏览器关闭，则Cookie被销毁
+  3. 零：删除对应Cookie 
+
+##### Cookie存储中文
+
+- Cookie不能直接存储中文
+- 如需要储存，则需要进行转码：URL编码
+
+### Session
+
+服务端会话跟踪技术：将数据保存到服务端 
+
+JavaEE提供HttpSession接口，来实现一次会话的多次请求间数据共享内容
+
+#### 基本使用
+
+1. 获取Session对象
+
+   ```java
+   HttpSesssion session = request.getSession();
+   ```
+
+2. Session对象功能
+
+   ```java
+   void setAttribute(String name,Object o);	存储数据到session域中
+   Object getAttribute(String name):	根据key，获取值
+   void removeAttribute(String name):	根据key，删除该键值对
+   ```
+
+#### 原理
+
+Session是基于Cookie实现的
+
+#### 使用细节
+
+- Session钝化、活化：
+
+  - 服务器重启后，Session中的数据仍然存在
+  - 钝化：在服务器正常关闭后，Tomcat会自动将Session数据写入硬盘文件中
+  - 活化：再次启动服务器后，从文件中加载数据到Session中
+
+- Session销毁：
+
+  - 默认情况下，无操作，30分钟后自动销毁
+
+    ```html
+    <session-config>
+    	<session-timeout>30</session-timeout>
+    </session-config>
+    ```
+
+  - 调用Session对象的`invalidate()`方法
+
+#### 小结
+
+- Cookie和Session都是来完成一次会话内多次请求间数据共享的
+- 区别
+  - 储存位置：Cookie是将数据存储在客户端，Session将数据存储在客户端
+  - 安全性：Cookie不安全，Session安全
+  - 数据大小：Cookie最大3KB，Session无大小限制
+  - 储存时间：Cookie可以长期储存，Session默认30分钟
+  - 服务器性能：Cookie不占服务器资源，Session占用服务器资源
