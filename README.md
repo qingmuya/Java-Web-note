@@ -872,3 +872,60 @@ Session是基于Cookie实现的
   - 数据大小：Cookie最大3KB，Session无大小限制
   - 储存时间：Cookie可以长期储存，Session默认30分钟
   - 服务器性能：Cookie不占服务器资源，Session占用服务器资源
+
+## Filter
+
+Filter表示过滤器，是JavaWeb三大组件（Servlet、Filter、Listener）之一。
+
+过滤器可以把对资源的请求拦截下来，从而实现一些特殊的处理。
+
+过滤器一般完成一些通用的操作，比如：权限控制、统一编码处理、敏感字符处理等等。
+
+### 基本使用
+
+1. 定义类，实现Filter接口，并重写其所有方法
+
+   ```java
+   public class FilterDemo implements Filter{
+       public void init(FilterConfig filterConfig);
+       public void doFilter(ServletRequest request);
+       public void destory(){}
+   }
+   ```
+
+2. 配置Filter拦截资源的路径：在类上定义`@WebFilter`注解
+
+   ```java\
+   @WebFilter("/*")
+   public class FilterDemo implements Filter{}
+   ```
+
+3. 在doFilter方法中输出一句话，并放行
+
+   ```java
+   public void deFilter(ServletRequest request,ServletResponse response){
+       System.out.println("filter被执行了...");
+       //放行
+       chain.doFilter(request,response);
+   }
+   ```
+
+### 拦截路径配置
+
+```java
+@WebFilter("/*")
+public class FilterDemo
+```
+
+- 拦截具体的资源：/index.jsp：只有访问index.jsp时才会被拦截
+- 目录拦截：/user/*：访问/user下的所有资源，都会被拦截
+- 后缀名拦截：*.jsp：访问后缀名为jsp的资源，都会被拦截
+- 拦截所有：/*：访问所有的资源，都会被拦截
+
+### 过滤器链
+
+一个Web应用，可以配置多个过滤器，这多个过滤器成为过滤器链
+
+注解配置的Filter，优先级按照过滤器类名（字符串）的自然排序
+
+![image-20240111225640113](./assets/image-20240111225640113.png)
