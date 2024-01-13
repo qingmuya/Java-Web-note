@@ -929,3 +929,161 @@ public class FilterDemo
 注解配置的Filter，优先级按照过滤器类名（字符串）的自然排序
 
 ![image-20240111225640113](./assets/image-20240111225640113.png)
+
+## AJAX
+
+异步的JavaScript和XML
+
+作用：
+
+1. 与服务器进行数据交换：通过AJAX可以给服务器发送请求，并获取服务器响应的数据
+2. 异步交互：可以在不重新加载整个页面的情况下，与服务器交换数据并更新部分网页的技术，如：搜索联想，用户名是否可用校验等
+
+### 使用
+
+1. 编写AjaxServlet，并使用response输出字符串
+
+2. 创建XMLHttpRequest对象：用于和服务器交换数据
+
+3. 向服务器发送请求
+
+   ```html
+   xmlhttp.open("GET","URL");
+   xmlhttp.send();	//发送请求
+   ```
+
+4. 获取服务器响应数据
+
+   ```html
+   xmlhttp.onereadystatechange = function(){
+   	if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+   		alert(xmlhttp.responseText);
+   	}
+   }
+   ```
+
+## Axios异步框架
+
+### 使用
+
+1. 引入axios的js文件
+
+   ```html
+   <script src="js/axios-0.18.0.js"></script>
+   ```
+
+2. 使用sxios发送请求，并获取响应结果
+
+   ```html
+   axios({
+   	method:"get",	
+   	url:"www.baidu.com"
+   }).then(function(resp){
+   	alert(resp.data);
+   });
+   ```
+
+   ```html
+   axios({
+   	method:"get",	
+   	url:"www.baidu.com",
+   	data:"username=zhangsan"
+   }).then(function(resp){
+   	alert(resp.data);
+   });
+   ```
+
+### 请求方式别名
+
+1. 发送get请求
+
+   ```html
+   axios.get("url")
+   	.then(function(resp){
+   		alert(resp.data);
+   })
+   ```
+
+2. 发送post请求
+
+   ```html
+   axios.post("url","参数")
+   	.then(function(resp){
+   		alert(resp.data);
+   })
+   ```
+
+## JSON
+
+### 基础语法
+
+ 标准格式
+
+```htnml
+var 变量名 = {
+	"key1":value1,
+	"key2":value2,
+	...
+};
+```
+
+value的数据类型为：
+
+- 数字（整数或浮点数）
+- 字符串（在双括号中）
+- 逻辑值（true或false）
+- 数组（在方括号中）
+- 对象（在花括号中）
+- null
+
+示例
+
+```html
+var json = {
+	"name":"zhangsan",
+	"age":23,
+	"addr":["北京","上海","西安"]
+};
+```
+
+### 获取数据
+
+标准格式
+
+```html
+变量名.key
+```
+
+示例
+
+```html
+json.name
+```
+
+### JSON数据和Java对象转换
+
+Fastjson：目前最快的JSON库，可以实现Java对象和HSON字符串的相互转换。
+
+使用：
+
+1. 导入坐标
+
+   ```html
+   <dependency>
+   	<groupld>com.alibaba</groupld>
+       <artifactld>fastjson</artifactld>
+       <version>1.2.62</version>
+   </dependency>
+   ```
+
+2. Java对象转JSON
+
+   ```html
+   String jsonStr = JSON.toJSONString(obj);
+   ```
+
+3. JSON字符串转Java对象
+
+   ```html
+   User user = JSON.parseObject(jsonStr,User.class);
+   ```
