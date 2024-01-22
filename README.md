@@ -37,6 +37,12 @@ cmd输入`mvn -version`
 
 ### 常用命令
 
+语法：	mvn 构建命令 构建命令... 
+
+命令执行需要进入到项目的根路径，pom.xml。
+
+部署到本地仓库必须打包为jar包形式。
+
 - compile：编译
 - clean：清理
 - test：测试
@@ -45,18 +51,22 @@ cmd输入`mvn -version`
 
 ### 生命周期
 
+**构建命令周期**：触发周期后的命令会自动触发同一周期前的命令。
+
+一个周期命令使用了若干命令，一个命令调用了若干插件。
+
 - Maven构建项目生命周期描述的是一次构建过程经历经历了多少个事件
 
 - Mevan对项目构建的生命周期划分为三套
   - clean：清理工作
-  - default：核心工作，例如编译，测试，打包，安装等
+  - default：核心工作，例如编译，测试，打包，安装等；属于最核心的部分
   - site：产生报告，发布站点等
 
 ### IDEA配置Maven
 
 ![image-20231203111324824](./assets/image-20231203111324824.png)
 
-### maven坐标
+### Maven坐标
 
 - 坐标
 
@@ -71,26 +81,88 @@ cmd输入`mvn -version`
 
 ### 依赖管理
 
-1. 在pom.xml中按`alt`+`Fn`+`insert`，选择Dependency
-2. 在弹出的面板中搜索对应坐标，然后双击选中对应坐标
-3. 点击刷新按钮，使坐标生效
+通过编写pom.xml文件来控制依赖信息。
+
+Maven可以通过pom.xml自动解析项目的依赖关系，并通过Maven仓库自动下载和管理依赖。
+
+pom.xml含有gavp四个基本属性：`groupld`、`artifactld`、`version`，`packaging`。
+
+其中`groupld`和`artifactld`属性不会改变；`version`会随着构建过程进行改变，`packaging`属性代表maven工程的打包方式：如java项目会打包成jar包，web工程会打包成war包。
+
+
+
+**如何导入依赖？**
+
+1. 建立项目以来信息的集合：`denpendencies`标签。
+2. 在pom.xml中按`alt`+`Fn`+`insert`，选择`dependency`，即每个依赖项 ： 每个依赖项必须包含gav三个属性。
+3. 在弹出的面板中搜索对应坐标，然后双击选中对应坐标
+4. 点击刷新按钮，使坐标生效
+
+
+
+**如何知道第三方依赖的信息？**
+
+1. maven提供的查询官网：https://mvnrepository.com
+2. maven插件 maven-search  ：   使用时，只需要在工具栏中选择maven-search直接搜索即可。
+
+对于一个第三方依赖，导入到项目中需要添加标签：xml本身类似html，通过添加`dependency`标签来添加一个依赖。
+
+
+
+**提取版本号，统一管理**
+
+在`properties`标签内声明一个变量，使用该变量代表版本号。
+
+标签命名格式一般为：技术名.版本号。
+
+其他位置的引用方式：`${变量名}`
 
 ### 依赖范围
 
-通过设置坐标的依赖范围，可以设置对应jar包的作用范围：编译环境、测试环境、运行环境
+通过设置坐标的依赖范围，可以设置对应jar包的作用范围：编译环境、测试环境、运行环境；属于**可选属性**。
 
 ```html
 <dependency>
     <groupId>junit</ groupId>
     <artifactId>junit</artifactId>
     <version>4.13</version>
-    <scope>test</scope>
+    <scope>test</scope>		//此处即为可选属性部分
 </dependency>
 ```
 
 ![image-20231203133236517](./assets/image-20231203133236517.png)
 
 <scope>默认值：compile
+
+### 依赖传递
+
+对于某些第三方依赖A，其本身也有依赖B；所以在使用依赖A时就要导入依赖B，而只需要导入依赖A，maven就会自动导入依赖B。
+
+### 依赖冲突
+
+发现已经存在依赖（重复依赖）会终止依赖传递，避免循环依赖和重复依赖的问题。
+
+只要发生冲突，后续依赖全部终止。
+
+
+
+**解决原则**
+
+第一原则：谁引用的路径长度短谁优先；
+
+第二原则：`dependencies`声明先后顺序；
+
+### 依赖继承与聚合
+
+#### 依赖
+
+子工程会继承父工程的ga属性。
+
+父工程内使用`dependencyManagement`标签可以声明依赖且不会下载依赖，子工程会继承其版本号。
+
+#### 聚合
+
+
 
 ## MyBatis
 
