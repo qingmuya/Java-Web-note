@@ -75,8 +75,8 @@ cmd输入`mvn -version`
   - 使用坐标来定义项目或引入项目中需要的依赖
 
 - Maven坐标主要组成
-  - groupld:定义当前Maven项目隶属组织名称(通常是域名反写，例如: com.itheima)
-  - artifactld:定义当前Maven项目名称(通常是模块名称,例如order service、goods service)
+  - groupId:定义当前Maven项目隶属组织名称(通常是域名反写，例如: com.itheima)
+  - artifactId:定义当前Maven项目名称(通常是模块名称,例如order service、goods service)
   - version:定义当前项目版本号版本
 
 ### 依赖管理
@@ -85,9 +85,9 @@ cmd输入`mvn -version`
 
 Maven可以通过pom.xml自动解析项目的依赖关系，并通过Maven仓库自动下载和管理依赖。
 
-pom.xml含有gavp四个基本属性：`groupld`、`artifactld`、`version`，`packaging`。
+pom.xml含有gavp四个基本属性：`groupId`、`artifactId`、`version`，`packaging`。
 
-其中`groupld`和`artifactld`属性不会改变；`version`会随着构建过程进行改变，`packaging`属性代表maven工程的打包方式：如java项目会打包成jar包，web工程会打包成war包。
+其中`groupId`和`artifactId`属性不会改变；`version`会随着构建过程进行改变，`packaging`属性代表maven工程的打包方式：如java项目会打包成jar包，web工程会打包成war包。
 
 
 
@@ -123,7 +123,7 @@ pom.xml含有gavp四个基本属性：`groupld`、`artifactld`、`version`，`pa
 
 ```html
 <dependency>
-    <groupId>junit</ groupId>
+    <groupId>junit</groupId>
     <artifactId>junit</artifactId>
     <version>4.13</version>
     <scope>test</scope>		//此处即为可选属性部分
@@ -144,8 +144,6 @@ pom.xml含有gavp四个基本属性：`groupld`、`artifactld`、`version`，`pa
 
 只要发生冲突，后续依赖全部终止。
 
-
-
 **解决原则**
 
 第一原则：谁引用的路径长度短谁优先；
@@ -162,7 +160,13 @@ pom.xml含有gavp四个基本属性：`groupld`、`artifactld`、`version`，`pa
 
 #### 聚合
 
+聚合是指将多个项目组织到一个父级项目中，通过触发父工程的构建，统一按顺序触发子工程构建的过程。
 
+
+
+**如何聚合**
+
+将子工程在父工程中声明，触发父工程的构建即可。
 
 ## MyBatis
 
@@ -537,8 +541,8 @@ port修改为想要的端口号即可。
 
    ```html
    <dependency>
-   	<grounld>javax.servlet</grounld>
-       <artifactld>javax.servlet-api</artifactld>
+   	<grounId>javax.servlet</grounId>
+       <artifactId>javax.servlet-api</artifactId>
        <version>3.1.0</version>
        <scope>provided</scope>
    </dependency>
@@ -794,8 +798,8 @@ resp.setHeader("location","资源B的路径");
 
      ```html
      <dependency>
-     	<groupld>commons-io</groupld>
-         <artifactld>commons-io</artifactld>
+     	<groupId>commons-io</groupId>
+         <artifactId>commons-io</artifactId>
          <version>2.6</version>
      </dependency>
      ```
@@ -1142,8 +1146,8 @@ Fastjson：目前最快的JSON库，可以实现Java对象和HSON字符串的相
 
    ```html
    <dependency>
-   	<groupld>com.alibaba</groupld>
-       <artifactld>fastjson</artifactld>
+   	<groupId>com.alibaba</groupId>
+       <artifactId>fastjson</artifactId>
        <version>1.2.62</version>
    </dependency>
    ```
